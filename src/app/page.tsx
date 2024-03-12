@@ -2,13 +2,10 @@
 import LoginButton from "@/components/loginButton/loginButton.component";
 import LogoutButton from "@/components/logoutButton/logoutButton.component";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const [auth, setAuth] = useState(false);
-  const searchParams = useSearchParams();
-  const accessCode = searchParams.get("code");
 
   useEffect(() => {
     const token = sessionStorage.getItem("id_token");
