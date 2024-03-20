@@ -10,23 +10,17 @@ type GoogleMapShowPointerProps = {
     lat: number;
     lng: number;
   };
+  sampleId: string;
 };
 
 export default memo(function GoogleMapShow(
   props: GoogleMapShowPointerProps,
   key: number
 ): JSX.Element {
-  const [libraries] = useState<Libraries>(["drawing"]);
   const [pinPosition] = useState<google.maps.LatLngLiteral>({
     lat: props.pinPosition.lat,
     lng: props.pinPosition.lng,
   });
 
-  const { isLoaded } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: googleApiKey,
-    libraries: libraries,
-  });
-
-  return <Marker key={key} position={pinPosition} />;
+  return <Marker key={key} position={pinPosition} title={props.sampleId} />;
 });

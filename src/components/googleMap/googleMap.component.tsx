@@ -8,6 +8,9 @@ import {
 } from "@react-google-maps/api";
 import React, { useState, memo, useCallback } from "react";
 import { useFormikContext } from "formik";
+import { Sample } from "@/services/api";
+import DrawmarkerComponent from "../drawmarker/drawmarker.component";
+import DrawrectangleComponent from "../drawrectangle/drawrectangle.component";
 
 const containerStyle = {
   width: "700px",
@@ -25,6 +28,8 @@ const googleApiKey: string = process.env.NEXT_PUBLIC_GOOGLE_API_KEY
 
 type GoogleMapProps = {
   mode: "search" | "create";
+  samples: Sample[];
+  setSamples: Function;
 };
 
 export default memo(function MyGoogleMap(props: GoogleMapProps): JSX.Element {
@@ -90,6 +95,7 @@ export default memo(function MyGoogleMap(props: GoogleMapProps): JSX.Element {
   ) => {
     if (overlay) overlay.overlay?.setMap(null);
     setOverlay(e);
+    props.setSamples([]);
   };
 
   const deleteOverlay = () => {
@@ -99,6 +105,18 @@ export default memo(function MyGoogleMap(props: GoogleMapProps): JSX.Element {
     }
     setFieldValue("locationRectangleBounds", null);
     if (overlay) overlay.overlay?.setMap(null);
+  };
+
+  const isSampleMarker = (sample: Sample): boolean => {
+    let isMarker: boolean;
+    sample.locationMarkerlat && sample.locationMarkerlng
+      ? (isMarker = true)
+      : (isMarker = false);
+
+    console.log("IS MARKER -------------");
+    console.log(isMarker);
+
+    return isMarker;
   };
 
   return isLoaded ? (
@@ -125,6 +143,34 @@ export default memo(function MyGoogleMap(props: GoogleMapProps): JSX.Element {
         onLoad={onMapLoad}
         onUnmount={onUnmount}
       >
+        {props.samples.map((sample) =>
+          isSampleMarker(sample)
+            ? sample.locationMarkerlat &&
+              sample.locationMarkerlng && (
+                <DrawmarkerComponent
+                  sampleId={sample.sampleId}
+                  key={sample.id}
+                  pinPosition={{
+                    lat: sample.locationMarkerlat,
+                    lng: sample.locationMarkerlng,
+                  }}
+                />
+              )
+            : sample.locationRectangleBounds &&
+              sample.locationRectangleBounds.east &&
+              sample.locationRectangleBounds.north &&
+              sample.locationRectangleBounds.east &&
+              sample.locationRectangleBounds.south && (
+                <DrawrectangleComponent
+                  rectanglePosition={{
+                    east: sample.locationRectangleBounds.east,
+                    north: sample.locationRectangleBounds.north,
+                    west: sample.locationRectangleBounds.west,
+                    south: sample.locationRectangleBounds.south,
+                  }}
+                />
+              )
+        )}
         <DrawingManager
           drawingMode={google.maps.drawing?.OverlayType.RECTANGLE}
           onRectangleComplete={handleOnRectangleComplete}

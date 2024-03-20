@@ -375,7 +375,11 @@ export default function NewSample() {
                     Sample Collection Location
                   </legend>
 
-                  <MyGoogleMap mode="create" />
+                  <MyGoogleMap
+                    mode="create"
+                    setSamples={() => {}}
+                    samples={[]}
+                  />
                 </fieldset>
                 <fieldset className="fieldset-border">
                   <legend className="fieldset-legend-inner">
