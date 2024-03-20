@@ -1,4 +1,4 @@
-import { useField, Field } from "formik";
+import { useField } from "formik";
 
 interface TextInput {
   name: string;

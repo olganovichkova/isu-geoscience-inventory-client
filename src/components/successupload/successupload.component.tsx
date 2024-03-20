@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback } from "react";
-import Button from "../button/button.component";
 
 export default function SuccessComponent() {
   const router = useRouter();
@@ -10,7 +9,6 @@ export default function SuccessComponent() {
     router.back();
   }, [router]);
 
-  //bg-secondary-100 hover:bg-secondary-200 text-white font-bold py-2 px-4 rounded ml-3
   return (
     <div className="flex flex-col">
       <div

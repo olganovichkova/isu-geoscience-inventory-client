@@ -1,16 +1,9 @@
 "use client";
-import {
-  Field,
-  Formik,
-  Form,
-  FormikProps,
-  useFormikContext,
-  useField,
-} from "formik";
+import { Field, Formik, Form, FormikProps } from "formik";
 import SampleCard from "@/components/samplecard/samplecard.component";
 import Spinner from "@/components/spinner/spinner.component";
 import { useEffect, useState } from "react";
-import samplesMock from "../../../mock/results.json";
+
 import { Sample, API, SearchFulltextParams } from "@/services/api";
 import Link from "next/link";
 import SearchOptionButton from "@/components/searchoptionsbutton/searchoptionbutton.component";
@@ -101,10 +94,10 @@ export default function SearchTerm() {
                       type="text"
                       id="searchterm"
                       name="searchterm"
-                      placeholder="Enter keyword or phrase to search by..."
+                      placeholder="Enter keyword to search by..."
                       className="filter-field"
                     />
-                    <small>Note: separate each word with a space.</small>
+                    <small>Note: search by individual word.</small>
                   </div>
                   <div className="col-start-6 col-span-1">
                     <button type="submit" className="submit-search-btn">

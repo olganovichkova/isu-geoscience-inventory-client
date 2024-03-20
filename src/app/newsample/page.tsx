@@ -495,10 +495,7 @@ export default function NewSample() {
                         )}
                     </div>
                   </div>
-                  {/* <div className="mb-3">
-                    <label htmlFor="sampleImg">Sample Image</label>
-                    <Field type="file" name="sampleImg" />
-                  </div> */}
+
                   <div className="mb-3">
                     <label className="inline-block" htmlFor="longDescription">
                       Detailed Description *
@@ -510,16 +507,7 @@ export default function NewSample() {
                       cols="3"
                       placeholder="Enter any additional storage details here..."
                     />
-
-                    {/* <SmallLabel label="Enter name or number of room ex. 222" /> */}
                   </div>
-                  {/* <TextInputField
-                    name="longDescription"
-                    component="textarea"
-                    rows="3"
-                    placeholder="Enter any additional storage details here"
-                    label={"Detailed Description *"}
-                  /> */}
                 </fieldset>
 
                 <fieldset className="fieldset-border">

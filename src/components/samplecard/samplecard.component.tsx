@@ -3,9 +3,7 @@ import Link from "next/link";
 import { Sample } from "../../services/api";
 import IconButton from "@/components/iconbutton/iconbutton.component";
 import { useState } from "react";
-import BasicDialog from "@/components/basicdialog/basicdialog.component";
 import ConfirmDialog from "@/components/confirmdialog/confirmdialog.component";
-import ExitIcon from "../exiticon/exiticon.component";
 import { LABELS } from "@/utils/labels";
 import DeleteIcon from "../deleteicon/deleteicon.component";
 

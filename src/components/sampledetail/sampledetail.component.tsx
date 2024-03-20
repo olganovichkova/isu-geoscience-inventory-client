@@ -1,13 +1,9 @@
 "use client";
 import { Sample } from "@/services/api";
-import { Router, useRouter } from "next/router";
-import { MouseEventHandler, useCallback, useRef } from "react";
-import IconButton from "@/components/iconbutton/iconbutton.component";
-import ExitIcon from "@/components/exiticon/exiticon.component";
+
 import GoogleMapShowPointer from "@/components/googleMapShowPointer/googlemapshowpointer.component";
 import GoogleMapShowRectangle from "../googleMapShowRectangle/googlemapshowrectangle.component";
 import { LABELS } from "./../../utils/labels";
-import { string } from "yup";
 
 export default function SampleDetail(sample: Sample) {
   return (

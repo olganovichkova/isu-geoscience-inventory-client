@@ -127,10 +127,6 @@ export default function SearchMap() {
                 setError("server error");
               });
           }
-
-          // setTimeout(() => {
-          //   actions.setSubmitting(false);
-          // }, 100);
         }}
       >
         {(props: FormikProps<MapSearchLocationParams>) => {
