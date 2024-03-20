@@ -1,7 +1,9 @@
 "use client";
 import { Field, Formik, Form, FormikProps } from "formik";
-import React, { useState } from "react";
-import MyGoogleMap from "@/components/googleMap/googleMap.component";
+import React, { useCallback, useEffect, useState } from "react";
+import MyGoogleMap, {
+  POCATELLO,
+} from "@/components/googleMap/googleMap.component";
 import Spinner from "@/components/spinner/spinner.component";
 import {
   API,
@@ -14,6 +16,9 @@ import Link from "next/link";
 import * as Yup from "yup";
 import SmallLabel from "@/components/smalllabel/smalllabel.component";
 import SearchOptionButton from "@/components/searchoptionsbutton/searchoptionbutton.component";
+import { GoogleMap, Libraries, useJsApiLoader } from "@react-google-maps/api";
+import DrawMarker from "@/components/drawmarker/drawmarker.component";
+import DrawRectangle from "@/components/drawrectangle/drawrectangle.component";
 
 const SearchMapValidationSchema = Yup.object().shape({
   locationRectangleBounds: Yup.object()
@@ -30,11 +35,55 @@ const SearchMapValidationSchema = Yup.object().shape({
     .required(),
 });
 
+const defaultContainerStyle = {
+  width: "700px",
+  height: "700px",
+};
+
+const googleApiKey: string = process.env.NEXT_PUBLIC_GOOGLE_API_KEY
+  ? process.env.NEXT_PUBLIC_GOOGLE_API_KEY
+  : "";
+
+type CENTER = { lat: number; lng: number };
+
 export default function SearchMap() {
   const [samples, setSamples] = useState<Sample[]>([]);
   const [loading, setLoading] = useState(false);
   const [init, setInit] = useState(false);
   const [error, setError] = useState<string>("");
+  const [auth, setAuth] = useState(false);
+  const [map, setMap] = useState<google.maps.Map>();
+  const [containerStyle, setContainerStyle] = useState(defaultContainerStyle);
+  const [libraries] = useState<Libraries>(["drawing"]);
+  const [search, setSearch] = useState(true);
+  const [center, setCenter] = useState<CENTER>();
+
+  const { isLoaded } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: googleApiKey,
+    libraries: libraries,
+  });
+
+  const onMapLoad = useCallback(function callback(map: google.maps.Map) {
+    // if (
+    //   document.getElementById("view-google-map")?.parentElement?.clientWidth
+    // ) {
+    //   setContainerStyle({
+    //     width: `${
+    //       document.getElementById("view-google-map")?.parentElement?.clientWidth
+    //     }px`,
+    //     height: "600px",
+    //   });
+    // }
+    // This is just an example of getting and using the map instance
+    setMap(map);
+  }, []);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("id_token");
+
+    token ? setAuth(true) : setAuth(false);
+  }, []);
 
   const handleOnDelete = (id: number) => {
     setError("");
@@ -51,6 +100,18 @@ export default function SearchMap() {
         setSamples(newSamples);
       })
       .catch((error) => setError(error));
+  };
+
+  const isSampleMarker = (sample: Sample): boolean => {
+    let isMarker: boolean;
+    sample.locationMarkerlat && sample.locationMarkerlng
+      ? (isMarker = true)
+      : (isMarker = false);
+
+    console.log("IS MARKER -------------");
+    console.log(isMarker);
+
+    return isMarker;
   };
 
   return (
@@ -84,6 +145,7 @@ export default function SearchMap() {
         initialValues={{}}
         onSubmit={async (values, actions) => {
           actions.setSubmitting(true);
+          setSearch(false);
           setLoading(true);
           setError("");
           if (!init) {
@@ -124,7 +186,61 @@ export default function SearchMap() {
                 <legend className="float-none w-auto p-2  text-xl">
                   Sample Collection Location
                 </legend>
-                <MyGoogleMap mode="search" />
+
+                {isLoaded &&
+                !loading &&
+                samples.length > 0 &&
+                search === false ? (
+                  <div id="view-google-map">
+                    <div className="flex justify-end mb-1">
+                      <button
+                        type="button"
+                        className=" bg-secondary-100 hover:bg-secondary-200 text-white font-bold py-2 px-4 rounded"
+                        onClick={() => {
+                          setSearch(!search);
+                        }}
+                      >
+                        Search Again
+                      </button>
+                    </div>
+                    <GoogleMap
+                      mapContainerStyle={containerStyle}
+                      center={POCATELLO}
+                      zoom={10}
+                      onLoad={onMapLoad}
+                    >
+                      {samples.map((sample) =>
+                        isSampleMarker(sample)
+                          ? sample.locationMarkerlat &&
+                            sample.locationMarkerlng && (
+                              <DrawMarker
+                                key={sample.id}
+                                pinPosition={{
+                                  lat: sample.locationMarkerlat,
+                                  lng: sample.locationMarkerlng,
+                                }}
+                              />
+                            )
+                          : sample.locationRectangleBounds &&
+                            sample.locationRectangleBounds.east &&
+                            sample.locationRectangleBounds.north &&
+                            sample.locationRectangleBounds.east &&
+                            sample.locationRectangleBounds.south && (
+                              <DrawRectangle
+                                rectanglePosition={{
+                                  east: sample.locationRectangleBounds.east,
+                                  north: sample.locationRectangleBounds.north,
+                                  west: sample.locationRectangleBounds.west,
+                                  south: sample.locationRectangleBounds.south,
+                                }}
+                              />
+                            )
+                      )}
+                    </GoogleMap>
+                  </div>
+                ) : (
+                  <MyGoogleMap mode="search" />
+                )}
               </fieldset>
               <div className="text-center mt-2">
                 <button
@@ -164,6 +280,7 @@ export default function SearchMap() {
                     sample={sample}
                     onDelete={handleOnDelete}
                     context="/search/map/"
+                    auth={auth}
                   />
                 </div>
               ))}

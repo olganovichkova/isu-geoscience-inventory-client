@@ -7,6 +7,7 @@ import ExitIcon from "@/components/exiticon/exiticon.component";
 import GoogleMapShowPointer from "@/components/googleMapShowPointer/googlemapshowpointer.component";
 import GoogleMapShowRectangle from "../googleMapShowRectangle/googlemapshowrectangle.component";
 import { LABELS } from "./../../utils/labels";
+import { string } from "yup";
 
 export default function SampleDetail(sample: Sample) {
   return (
@@ -81,7 +82,13 @@ export default function SampleDetail(sample: Sample) {
                             <div className="mt-1 text-sm justify-self-end leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                               {sample.collectionReason &&
                               sample.collectionReason.length > 0 ? (
-                                `${sample.collectionReason.join(", ")}`
+                                `${sample.collectionReason
+                                  .map((reason) =>
+                                    reason === "other"
+                                      ? sample.collectionReasonOther
+                                      : LABELS[reason]
+                                  )
+                                  .join(", ")}`
                               ) : (
                                 <div className="text-gray-300"> --N/A-- </div>
                               )}
@@ -178,7 +185,13 @@ export default function SampleDetail(sample: Sample) {
                             <div className="mt-1 text-sm justify-self-end leading-6 text-gray-700 sm:col-span-2 sm:mt-0">
                               {sample.sampleType &&
                               sample.sampleType.length > 0 ? (
-                                `${sample.sampleType.join(", ")}`
+                                `${sample.sampleType
+                                  .map((type) =>
+                                    type === "other"
+                                      ? sample.sampleTypeOther
+                                      : LABELS[type]
+                                  )
+                                  .join(", ")}`
                               ) : (
                                 <div className="text-gray-300"> --N/A-- </div>
                               )}
@@ -193,7 +206,11 @@ export default function SampleDetail(sample: Sample) {
                               {sample.sampleForm &&
                               sample.sampleForm.length > 0 ? (
                                 `${sample.sampleForm
-                                  .map((form) => LABELS[form])
+                                  .map((form) =>
+                                    form === "other"
+                                      ? sample.sampleFormOther
+                                      : LABELS[form]
+                                  )
                                   .join(", ")}`
                               ) : (
                                 <div className="text-gray-300"> --N/A-- </div>

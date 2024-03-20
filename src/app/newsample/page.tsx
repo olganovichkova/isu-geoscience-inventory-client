@@ -1,6 +1,6 @@
 "use client";
 import { Field, Formik, Form, FormikProps } from "formik";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MyGoogleMap from "@/components/googleMap/googleMap.component";
 import { API, Sample, FileUpload } from "@/services/api";
 import * as Yup from "yup";
@@ -49,7 +49,22 @@ const BatchUploadSchema = Yup.object().shape({
 });
 
 export default function NewSample() {
+  const [auth, setAuth] = useState(false);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("id_token");
+
+    token ? setAuth(true) : setAuth(false);
+  }, []);
+
   const router = useRouter();
+  if (!auth) {
+    return (
+      <div className="flex justify-center">
+        You have to be logged in to view this page.
+      </div>
+    );
+  }
   return (
     <div>
       <div>
@@ -76,7 +91,7 @@ export default function NewSample() {
                     .then(() =>
                       API.batchUpload(presignedURL)
                         .then((status) => {
-                          alert("success");
+                          // alert("success");
                           actions.setStatus("success");
                           actions.setSubmitting(false);
                           actions.resetForm();
@@ -86,16 +101,19 @@ export default function NewSample() {
                           console.log(error);
                           alert("Batch Upload Error");
                           actions.setSubmitting(false);
+                          actions.setStatus("error");
                         })
                     )
                     .catch((error) => {
                       alert("cannot upload file");
                       actions.setSubmitting(false);
+                      actions.setStatus("error");
                     });
               })
               .catch((error) => {
                 alert("cannot get presigned url");
                 actions.setSubmitting(false);
+                actions.setStatus("error");
               });
           }
         }}
@@ -108,7 +126,29 @@ export default function NewSample() {
                   <legend className="float-none w-auto text-xl">
                     Batch Upload
                   </legend>
-                  <div>
+                  <div className="flex items-center">
+                    <a target="_blank" href="template-spreadsheet-format.xlsx">
+                      <span
+                        title="Download Template"
+                        className="cursor-pointer"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          className="w-6 h-6 mr-3"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"
+                          />
+                        </svg>
+                      </span>
+                    </a>
+
                     <label className="mb-1 inline-block">
                       <XlsUploader />
                     </label>
@@ -117,7 +157,8 @@ export default function NewSample() {
                     ) : null}
                     {props.isValid &&
                       props.values.file &&
-                      !props.isSubmitting && (
+                      !props.isSubmitting &&
+                      props.status != "submitting" && (
                         <button
                           type="submit"
                           className="bg-secondary-100 hover:bg-secondary-200 text-white font-bold py-2 px-4 rounded ml-3"
@@ -125,6 +166,11 @@ export default function NewSample() {
                           SUBMIT
                         </button>
                       )}
+                    {props.status === "submitting" && (
+                      <div className="inline-block ml-6">
+                        <SpinnerComponent />
+                      </div>
+                    )}
                   </div>
                 </fieldset>
               </fieldset>
@@ -258,30 +304,19 @@ export default function NewSample() {
                     label={"Collector Name"}
                     small="Enter full name as first and last name. ex. John Doe"
                   />
-
                   <div className="mb-3">
                     <label className="inline-block" htmlFor="advisorName">
-                      Advisor
+                      Advisor Last Name
                     </label>
                     <Field
                       name="advisorName"
-                      as="select"
+                      type="text"
                       className="inline-input"
-                    >
-                      <option value="">Select</option>
-                      <option value="Dave">Dave</option>
-                      <option value="Ben">Ben</option>
-                      <option value="Other">Other</option>
-                    </Field>
-                    <SmallLabel label="From the dropdown, select an Advisor." />
-                  </div>
-                  {props.values.advisorName === "Other" && (
-                    <OtherOption
-                      name="advisorOtherName"
-                      type={"text"}
-                      label={"Other Adviser Name"}
+                      placeholder="Enter advisor last name here..."
                     />
-                  )}
+
+                    <SmallLabel label="Enter last name of the advisor. ex. Smith" />
+                  </div>
                   <TextInputField
                     name="collectionYear"
                     type="text"
@@ -289,6 +324,7 @@ export default function NewSample() {
                     label={"Year Collected"}
                     small="Enter the year of when this sample was collected."
                   />
+
                   <div className="mb-3">
                     <div>
                       <label className="mb-1 block">
@@ -305,12 +341,14 @@ export default function NewSample() {
                         value={"teaching"}
                         label={"Teaching"}
                       />
+
                       <CheckboxInput
                         name="collectionReason"
                         type={"checkbox"}
                         value={"research"}
                         label={"Research"}
                       />
+
                       <CheckboxInput
                         name="collectionReason"
                         type={"checkbox"}
@@ -331,6 +369,7 @@ export default function NewSample() {
                     </div>
                   </div>
                 </fieldset>
+
                 <fieldset className="fieldset-border">
                   <legend className="fieldset-legend-inner">
                     Sample Collection Location
@@ -452,17 +491,31 @@ export default function NewSample() {
                         )}
                     </div>
                   </div>
-                  <div className="mb-3">
+                  {/* <div className="mb-3">
                     <label htmlFor="sampleImg">Sample Image</label>
                     <Field type="file" name="sampleImg" />
+                  </div> */}
+                  <div className="mb-3">
+                    <label className="inline-block" htmlFor="longDescription">
+                      Detailed Description *
+                    </label>
+                    <Field
+                      name="longDescription"
+                      component="textarea"
+                      className="inline-input"
+                      cols="3"
+                      placeholder="Enter any additional storage details here..."
+                    />
+
+                    {/* <SmallLabel label="Enter name or number of room ex. 222" /> */}
                   </div>
-                  <TextInputField
+                  {/* <TextInputField
                     name="longDescription"
                     component="textarea"
                     rows="3"
                     placeholder="Enter any additional storage details here"
                     label={"Detailed Description *"}
-                  />
+                  /> */}
                 </fieldset>
 
                 <fieldset className="fieldset-border">
@@ -501,27 +554,14 @@ export default function NewSample() {
                     </label>
                     <Field
                       name="storageRoom"
-                      as="select"
+                      type="text"
                       className="inline-input"
-                    >
-                      <option value="">Select</option>
-                      <option value="1">Room #1</option>
-                      <option value="2">Room #2</option>
-                      <option value="3">Room #3</option>
-                      <option value="Other">Other</option>
-                    </Field>
-                    <SmallLabel
-                      label="From the dropdown, select which room this sample will be
-                      stored in."
+                      placeholder="Enter storage room here..."
                     />
+
+                    <SmallLabel label="Enter name or number of room ex. 222" />
                   </div>
-                  {props.values.storageRoom === "Other" && (
-                    <OtherOption
-                      name="storageRoomOther"
-                      label={"Other Storage Room"}
-                      type={"text"}
-                    />
-                  )}
+
                   <TextInputField
                     name="storageDetails"
                     type="textarea"

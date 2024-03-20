@@ -9,7 +9,7 @@ import {
 } from "formik";
 import SampleCard from "@/components/samplecard/samplecard.component";
 import Spinner from "@/components/spinner/spinner.component";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import samplesMock from "../../../mock/results.json";
 import { Sample, API, SearchFulltextParams } from "@/services/api";
 import Link from "next/link";
@@ -20,6 +20,13 @@ export default function SearchTerm() {
   const [loading, setLoading] = useState(false);
   const [init, setInit] = useState(false);
   const [error, setError] = useState<string>("");
+  const [auth, setAuth] = useState(false);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("id_token");
+
+    token ? setAuth(true) : setAuth(false);
+  }, []);
 
   const handleOnDelete = (id: number) => {
     setError("");
@@ -128,6 +135,7 @@ export default function SearchTerm() {
                         sample={sample}
                         onDelete={handleOnDelete}
                         context="/search/term/"
+                        auth={auth}
                       />
                     </div>
                   ))}

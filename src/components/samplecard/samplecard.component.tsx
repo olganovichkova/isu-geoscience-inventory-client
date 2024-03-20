@@ -3,20 +3,24 @@ import Link from "next/link";
 import { Sample } from "../../services/api";
 import IconButton from "@/components/iconbutton/iconbutton.component";
 import { useState } from "react";
+import BasicDialog from "@/components/basicdialog/basicdialog.component";
 import ConfirmDialog from "@/components/confirmdialog/confirmdialog.component";
 import ExitIcon from "../exiticon/exiticon.component";
 import { LABELS } from "@/utils/labels";
+import DeleteIcon from "../deleteicon/deleteicon.component";
 
 type SamplCardProp = {
   sample: Sample;
   onDelete: (id: number) => void;
   context: string;
+  auth: boolean;
 };
 
 export default function SampleCard({
   sample,
   onDelete,
   context,
+  auth,
 }: SamplCardProp) {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
@@ -44,16 +48,20 @@ export default function SampleCard({
                         </h5>
                       </div>
                       <div>
-                        <div className="w-10 h-10">
+                        <div className="w-18 h-18">
                           <div className="relative">
-                            <span className="absolute top-0 right-0">
-                              <IconButton onClick={() => setConfirmOpen(true)}>
-                                <ExitIcon />
-                              </IconButton>
-                            </span>
+                            {auth && (
+                              <span className="absolute top-0 right-0">
+                                <IconButton
+                                  onClick={() => setConfirmOpen(true)}
+                                >
+                                  <DeleteIcon />
+                                </IconButton>
+                              </span>
+                            )}
 
                             <ConfirmDialog
-                              title="Delete Post?"
+                              title={`Delete sample [${sample.id}]`}
                               open={confirmOpen}
                               onClose={() => setConfirmOpen(false)}
                               onConfirm={() => {
@@ -65,7 +73,52 @@ export default function SampleCard({
                                 return;
                               }}
                             >
-                              Are you sure you want to delete this post?
+                              <div className="bg-gray-100 p-4">
+                                <div className="font-medium text-black-900">
+                                  Warning: this action cannot be undone.
+                                </div>
+                                <span className="flex items-center text-red-600">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="w-4 h-4 mr-1"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                    />
+                                  </svg>
+
+                                  <div className="text-sm">
+                                    All references to this sample will be
+                                    erased.
+                                  </div>
+                                </span>
+                                <span className="flex items-center text-red-600">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="w-4 h-4 mr-1"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                                    />
+                                  </svg>
+                                  <div className="text-sm">
+                                    This sample will be deleted from the
+                                    database.
+                                  </div>
+                                </span>
+                              </div>
                             </ConfirmDialog>
                           </div>
                         </div>

@@ -1,7 +1,7 @@
 "use client";
 import { Field, Formik, Form, FormikProps } from "formik";
 import SampleCard from "@/components/samplecard/samplecard.component";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Sample, API, SearchFilterParams } from "@/services/api";
 import Link from "next/link";
 import SpinnerComponent from "@/components/spinner/spinner.component";
@@ -22,6 +22,13 @@ export default function FilterSearch() {
   const [loading, setLoading] = useState(false);
   const [init, setInit] = useState(false);
   const [error, setError] = useState<string>("");
+  const [auth, setAuth] = useState(false);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("id_token");
+
+    token ? setAuth(true) : setAuth(false);
+  }, []);
 
   const handleOnDelete = (id: number) => {
     setError("");
@@ -339,6 +346,7 @@ export default function FilterSearch() {
                               sample={sample}
                               onDelete={handleOnDelete}
                               context="/search/filters/"
+                              auth={auth}
                             />
                           </div>
                         ))}

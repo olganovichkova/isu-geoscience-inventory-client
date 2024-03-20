@@ -11,28 +11,17 @@ export default function LoginButton(): JSX.Element {
             <span className="">
               Admin Login
               <svg
-                x="0px"
-                y="0px"
-                width="120"
-                height="120"
-                viewBox="0 0 30 30"
-                fill="none"
-                className="w-4 h-4 hidden md:inline-block"
                 xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="w-4 h-4 hidden md:inline-block"
               >
                 <path
-                  opacity="0.5"
-                  d="M12 20C16.4183 20 20 16.4183 20 12C20 7.58172 16.4183 4 12 4"
-                  stroke="#bc6c25"
-                  strokeWidth="2.4"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M4 12H14M14 12L11 9M14 12L11 15"
-                  stroke="#bc6c25"
-                  strokeWidth="2.4"
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  d="m12.75 15 3-3m0 0-3-3m3 3h-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                 />
               </svg>
             </span>

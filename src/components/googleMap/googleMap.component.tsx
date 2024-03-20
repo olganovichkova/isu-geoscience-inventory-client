@@ -14,7 +14,7 @@ const containerStyle = {
   height: "600px",
 };
 
-const POCATELLO = {
+export const POCATELLO = {
   lat: 42.880363,
   lng: -112.452911,
 };
