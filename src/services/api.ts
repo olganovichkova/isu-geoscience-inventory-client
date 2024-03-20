@@ -97,8 +97,9 @@ export interface FileParams {
 
 export class API {
   // public static readonly API_URL: string = process.env.API_URL!;
-  public static readonly API_URL: string =
-    "https://lrfbqhfol6.execute-api.us-east-1.amazonaws.com/staging";
+  public static readonly API_URL: string = process.env.NEXT_PUBLIC_API_URL
+    ? process.env.NEXT_PUBLIC_API_URL
+    : "";
 
   public static isAuthenticated(): boolean {
     return sessionStorage.getItem("id_token") !== null;
