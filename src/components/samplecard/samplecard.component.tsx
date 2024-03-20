@@ -13,7 +13,7 @@ type SamplCardProp = {
   context: string;
   auth: boolean;
 };
-
+//function to display results sample card
 export default function SampleCard({
   sample,
   onDelete,
