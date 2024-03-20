@@ -22,7 +22,7 @@ export default function Confirm(props: Props) {
       <div className="flex justify-between">
         <div className="p-1">
           <Button
-            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded ml-3"
+            className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
             onClick={() => {
               onClose();
               onConfirm();
@@ -34,7 +34,7 @@ export default function Confirm(props: Props) {
         <div className="p-1">
           <Button
             onClick={() => onClose()}
-            className="bg-secondary-100 hover:bg-secondary-200 text-white font-bold py-2 px-4 rounded ml-3"
+            className="bg-secondary-100 hover:bg-secondary-200 text-white font-bold py-2 px-4 rounded"
           >
             No
           </Button>
