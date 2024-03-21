@@ -17,6 +17,7 @@ const NewSampleSchema = Yup.object().shape({
   category: Yup.string().max(255, "Too Long!").required("Required"),
   sampleId: Yup.string().max(255, "Too Long!").required("Required"),
   collectorName: Yup.string().max(255, "Too Long!"),
+  advisorName: Yup.string().max(255, "Too Long!"),
   advisorOtherName: Yup.string().max(255, "Too Long!"),
   collectionYear: Yup.date(),
   collectionReasonOther: Yup.string().max(255, "Too Long!"),
@@ -195,7 +196,8 @@ export default function NewSample() {
 
       <p className="text-center text-sm mb-2">
         Please fill out the form to the best of your ability. The fields marked
-        with an asterisk (*) are required to be completed.
+        with an asterisk (*) are required to be completed. Note: All entries are
+        final once submitted. There is no editing feature.
       </p>
 
       <Formik

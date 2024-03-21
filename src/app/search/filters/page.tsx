@@ -189,14 +189,11 @@ export default function FilterSearch() {
                               />
                               {toggleAdvisor && (
                                 <Field
+                                  type="text"
                                   name="advisorName"
-                                  as="select"
+                                  placeholder="advisor last name"
                                   className="filter-field"
-                                >
-                                  <option value="">select advisor name</option>
-                                  <option value="Ben">Ben</option>
-                                  <option value="Dave">Dave</option>
-                                </Field>
+                                />
                               )}
                             </div>
                             <div className="px-2 py-2">
@@ -295,15 +292,11 @@ export default function FilterSearch() {
                               />
                               {toggleRoom && (
                                 <Field
+                                  type="text"
                                   name="storageRoom"
-                                  as="select"
+                                  placeholder="storage room"
                                   className="filter-field"
-                                >
-                                  <option value="">select storage room</option>
-                                  <option value="room1">Room #1</option>
-                                  <option value="room2">Room #2</option>
-                                  <option value="room3">Room #3</option>
-                                </Field>
+                                />
                               )}
                             </div>
                           </div>
